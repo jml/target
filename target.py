@@ -12,10 +12,10 @@ def fits_target(target_word, central, word):
     if central not in word:
         return False
     duplicate = list(target_word)
-    for i, c in enumerate(word):
+    for c in word:
         if c not in duplicate:
             return False
-        duplicate[i] = None
+        duplicate.remove(c)
     return True
 
 
@@ -32,7 +32,6 @@ def search_dictionary(target_word, central):
 
 
 def main(target_word, central):
-    print target_word, central
     count = 0
     for word in search_dictionary(target_word, central):
         count += 1
