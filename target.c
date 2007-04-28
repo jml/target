@@ -13,7 +13,8 @@ int is_word(const char* word) {
         ssize_t found_length = getline(&line_ptr, &buffer_size, words);
         if (-1 == found_length)
             break;
-        if (0 == strncmp(word, line_ptr, word_length)) {
+        found_length -= rstrip(line_ptr);
+        if (0 == strcmp(word, line_ptr)) {
             free(line_ptr);
             return 1;
         }
@@ -33,9 +34,20 @@ int strfind(const char* haystack, char needle, size_t length) {
     return -1;
 }
 
-int _anagram_of_substring(const char* target_word, const char* word) {
-    size_t target_word_len = strlen(target_word);
-    size_t word_len = strlen(word);
+
+int fits_target(const char* target_word, size_t target_word_len, char central,
+                const char* word, size_t word_len) {
+    assert(target_word_len == 9);
+
+    /* Is it more than four letters long? */
+    if (word_len < 4 || word_len > target_word_len) {
+        return 0;
+    }
+
+    /* Does it have the central character? */
+    if (NULL == strchr(word, central)) {
+        return 0;
+    }
 
     char *duplicate = strdup(target_word);
     assert(NULL != duplicate);
@@ -54,63 +66,51 @@ int _anagram_of_substring(const char* target_word, const char* word) {
     return fits;
 }
 
-int fits_target(const char* target_word, char central, const char* word) {
-    size_t target_word_len = strlen(target_word) * sizeof(char);
-    assert(target_word_len == 9);
-    int word_len = strlen(word);
 
-    /* Is it more than four letters long? */
-    if (word_len < 4) {
-        return 0;
-    }
-
-    /* Does it have the central character? */
-    if (NULL == strchr(word, central)) {
-        return 0;
-    }
-
-    return _anagram_of_substring(target_word, word);
-}
-
-
-void rstrip(char *word) {
-    int len = strlen(word);
+int rstrip(char *word) {
     char *last = strchr(word, '\0');
+    int stripped = 0;
     while (word != (--last)) {
         if ('\n' == *last) {
             *last = '\0';
+            ++stripped;
         }
     }
+    return stripped;
 }
 
 
 void search_dictionary(const char* target_word, char central) {
     size_t buffer_size = 0;
     char *line_ptr = 0;
-    FILE *words = fopen("/usr/share/dict/words", "r");
     int solutions_found = 0;
+    FILE *words = fopen("/usr/share/dict/words", "r");
+    size_t target_word_len = strlen(target_word) * sizeof(char);
+    char *duplicate = malloc(target_word_len);
     while (1) {
         ssize_t found_len = getline(&line_ptr, &buffer_size, words);
         if (-1 == found_len) {
             break;
         }
-        rstrip(line_ptr);
-        found_len = strlen(line_ptr);
-        if (fits_target(target_word, central, line_ptr)) {
-            if ('s' == line_ptr[found_len - 1]) {
-                char *duplicate = strdup(line_ptr);
-                duplicate[found_len - 1] = '\0';
-                if (!is_word(duplicate)) {
-                    printf("%s\n", line_ptr);
-                    ++solutions_found;
-                }
-                free(duplicate);
-            } else {
-                printf("--> %s\n", line_ptr);
-                ++solutions_found;
+        found_len -= rstrip(line_ptr);
+        if (found_len > target_word_len) {
+            continue;
+        }
+        if (!fits_target(target_word, target_word_len, central, line_ptr, found_len)) {
+            continue;
+        }
+        if ('s' == line_ptr[found_len - 1]) {
+            strncpy(duplicate, line_ptr, found_len - 1);
+            int is_plural = is_word(duplicate);
+            memset(duplicate, 0, target_word_len);
+            if (is_plural) {
+                continue;
             }
         }
+        printf("--> %s\n", line_ptr);
+        ++solutions_found;
     }
+    free(duplicate);
     free(line_ptr);
     fclose(words);
     printf("%d solutions found.\n", solutions_found);
