@@ -6,6 +6,9 @@ def generate_words():
     fd.close()
 
 
+WORD_LIST = set(generate_words())
+
+
 def fits_target(target_word, central, word):
     if not 4 <= len(word) <= target_word:
         return False
@@ -22,11 +25,11 @@ def fits_target(target_word, central, word):
 def is_plural(word):
     if word[-1] != 's':
         return False
-    return word[:-1] in generate_words()
+    return word[:-1] in WORD_LIST
 
 
 def search_dictionary(target_word, central):
-    for word in generate_words():
+    for word in WORD_LIST:
         if fits_target(target_word, central, word) and not is_plural(word):
             yield word
 
