@@ -1,6 +1,8 @@
 
+WORD_FILE = '/usr/share/dict/words'
+
 def generate_words():
-    fd = open('/usr/share/dict/words', 'r')
+    fd = open(WORD_FILE, 'r')
     for line in fd:
         yield line.strip()
     fd.close()
