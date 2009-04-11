@@ -1,13 +1,5 @@
-import Data.Char
 import Data.List
 import System.Environment (getArgs)
-
-
-lstrip :: String -> String
-lstrip = dropWhile isSpace
-
-strip :: String -> String
-strip = reverse . lstrip . reverse . lstrip
 
 
 wordFile = "/home/jml/Dropbox/Code/Scrabble/source_data/sowpods.txt"
