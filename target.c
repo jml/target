@@ -4,11 +4,14 @@
 #include <string.h>
 
 
+const char* WORD_FILE = "/home/jml/Dropbox/Code/Scrabble/source_data/sowpods.txt";
+
+
 int is_word(const char* word) {
     size_t buffer_size = (buffer_size + 1) * sizeof(char);
     size_t word_length = strlen(word);
     char *line_ptr = malloc(buffer_size);
-    FILE *words = fopen("/usr/share/dict/words", "r");
+    FILE *words = fopen(WORD_FILE, "r");
     while (1) {
         ssize_t found_length = getline(&line_ptr, &buffer_size, words);
         if (-1 == found_length)
@@ -71,7 +74,7 @@ int rstrip(char *word) {
     char *last = strchr(word, '\0');
     int stripped = 0;
     while (word != (--last)) {
-        if ('\n' == *last) {
+        if ('\n' == *last || '\r' == *last) {
             *last = '\0';
             ++stripped;
         }
@@ -84,7 +87,7 @@ void search_dictionary(const char* target_word, char central) {
     size_t buffer_size = 0;
     char *line_ptr = 0;
     int solutions_found = 0;
-    FILE *words = fopen("/usr/share/dict/words", "r");
+    FILE *words = fopen(WORD_FILE, "r");
     size_t target_word_len = strlen(target_word) * sizeof(char);
     char *duplicate = malloc(target_word_len);
     while (1) {
