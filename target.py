@@ -1,10 +1,10 @@
 
-WORD_FILE = '/usr/share/dict/words'
+WORD_FILE = '/home/jml/Dropbox/Code/Scrabble/source_data/sowpods.txt'
 
 def generate_words():
     fd = open(WORD_FILE, 'r')
     for line in fd:
-        yield line.strip()
+        yield line.strip().lower()
     fd.close()
 
 
