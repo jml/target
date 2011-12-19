@@ -1,5 +1,6 @@
 
-WORD_FILE = '/home/jml/Dropbox/Code/Scrabble/source_data/sowpods.txt'
+WORD_FILE = '/home/jml/src/Scrabble/source_data/sowpods.txt'
+#WORD_FILE = '/usr/share/dict/words'
 
 def generate_words():
     fd = open(WORD_FILE, 'r')

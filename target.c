@@ -4,7 +4,7 @@
 #include <string.h>
 
 
-const char* WORD_FILE = "/home/jml/Dropbox/Code/Scrabble/source_data/sowpods.txt";
+const char* WORD_FILE = "/home/jml/src/Scrabble/source_data/sowpods.txt";
 
 
 int is_word(const char* word) {
